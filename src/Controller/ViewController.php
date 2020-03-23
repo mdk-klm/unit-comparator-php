@@ -7,12 +7,31 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ViewController extends AbstractController
 {
+    private $links = [
+        [
+            'route' => '/',
+            'name' => 'Home',
+        ],
+        [
+            'route' => '/web/units',
+            'name' => 'Units',
+        ],
+        [
+            'route' => '/web/convert',
+            'name' => 'Convert',
+        ],
+    ];
     /**
      * @Route("/", name="index")
      */
     public function index()
     {
-        return $this->render('index.html.twig');
+        return $this->render(
+            'index.html.twig',
+            [
+                'links' => $this->links,
+            ]
+        );
     }
 
     /**
@@ -20,6 +39,11 @@ class ViewController extends AbstractController
      */
     public function convert()
     {
-        return $this->render('convert.html.twig');
+        return $this->render(
+            'convert.html.twig',
+            [
+                'links' => $this->links,
+            ]
+        );
     }
 }

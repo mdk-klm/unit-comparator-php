@@ -4,26 +4,27 @@
     <meta charset="UTF-8" />
     <title>{% block title %}Welcome!{% endblock %}</title>
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" />
-    {% block stylesheets %}{% endblock %}
-    {% block javascripts %}{% endblock %}
+    {% block stylesheets %}{% endblock %} {% block javascripts %}{% endblock %}
   </head>
   <body class="bg-dark text-light text-center">
     <header>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Navbar</a>
+      <nav class="navbar navbar-expand-sm navbar-dark bg-secondary">
+        <div class="navbar-brand" href="#">Navbar</div>
         <div class="navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-item nav-link active" href="#"
-              >Home <span class="sr-only">(current)</span></a
+            {% for link in links %}
+            <a
+              class="nav-item nav-link {{ app.request.pathinfo is same as(link.route) ? 'active' : '' }}
+            "
+              href="{{ link.route }}"
+              >{{ link.name }}</a
             >
-            <a class="nav-item nav-link" href="#">Features</a>
-            <a class="nav-item nav-link" href="#">Pricing</a>
-            <a class="nav-item nav-link disabled" href="#">Disabled</a>
+            {% endfor %}
           </div>
         </div>
       </nav>
     </header>
-    {% block content %}{% endblock %} 
+    {% block content %}{% endblock %}
     <footer></footer>
   </body>
 </html>
