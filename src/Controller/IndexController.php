@@ -2,21 +2,51 @@
 
 namespace App\Controller;
 
-
-use App\ClassFilterUnits;
 use App\JSONToReturn;
+use App\Repository\UnitRepository;
+use App\Service\UnitService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use function App\Service\co2ToKw;
 use function App\Service\hectareToM2;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 use function App\Service\kwToCo2;
 use function App\Service\m2toHectare;
 
 
 class IndexController extends AbstractController
 {
+    private $serializer;
+    private $unitService;
+
+    /**
+     * @var UnitRepository
+     */
+    private $unitRepository;
+
+    /**
+     * VoteController constructor.
+     * @param SerializerInterface $serializer
+     * @param UnitService $unitService
+     * @param UnitRepository $unitRepository
+     */
+    public function __construct(
+        SerializerInterface $serializer,
+        UnitService $unitService,
+        UnitRepository $unitRepository)
+    {
+        $this->serializer = $serializer;
+        $this->unitService = $unitService;
+        $this->unitRepository = $unitRepository;
+    }
+
     const ERROR_CODE = 400;
 
     /**
@@ -109,23 +139,23 @@ class IndexController extends AbstractController
 
     /**
      * @Route("/unit", name="unit", methods={"GET"})
-     * UserStory 1 : m² to hectare
-     * @return void
      */
-    public
-    function unit()
+    public function showUnits()
     {
-        $fausseExtraction =[
-            ['unit' => 'm2', 'definition' => 'Un carré de 1m x 1m','source'=>'https://fr.wikipedia.org/wiki/M%C3%A8tre_carr%C3%A9'],
-            ['unit' => 'ha', 'definition' => 'Un carré de 100m x 100m','source'=>'https://fr.wikipedia.org/wiki/Hectare'],
-            ['unit' => 'kW', 'definition' => 'Unité de puissance, multiple du watt, et valant 1000 watts','source'=>'https://www.actu-environnement.com/ae/dictionnaire_environnement/definition/kilowatt_kw.php4'],
-            ['unit' => 'kg CO2', 'definition' => 'Quantité de gaz à effet de serre','source'=>'https://fr.wikipedia.org/wiki/%C3%89quivalent_CO2'],
+        $encoder = new JsonEncoder();
+        $defaultContext = [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
+                return $object->getSource();
+            },
         ];
+        $normalizer = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
 
-        $myObject = new JSONToReturn($fausseExtraction);
-        return new JsonResponse($myObject);
+        $serializer = new Serializer([$normalizer], [$encoder]);
+
+        $displayAllUnits = new JSONToReturn($this->unitService->displayUnits($this->unitRepository));
+
+        return new JsonResponse($serializer->serialize($displayAllUnits, 'json'), Response::HTTP_OK, [], true);
     }
-
 }
 
 
