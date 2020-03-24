@@ -4,10 +4,17 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\UnitService;
+use App\Repository\UnitRepository;
 
 class ViewController extends AbstractController
 {
+
+
+    private $unitService;
+    private $unitRepository;
     private $links = [
+ 
         [
             'route' => '/',
             'name' => 'Home',
@@ -21,9 +28,26 @@ class ViewController extends AbstractController
             'name' => 'Convert',
         ],
     ];
+
+
+  /**
+     * VoteController constructor.
+
+     * @param UnitService $unitService
+     * @param UnitRepository $unitRepository
+     */
+    public function __construct(
+        UnitService $unitService,
+        UnitRepository $unitRepository)
+    {
+        $this->unitService = $unitService;
+        $this->unitRepository = $unitRepository;
+    }
+
     /**
      * @Route("/", name="index")
      */
+
     public function index()
     {
         return $this->render(
@@ -43,6 +67,20 @@ class ViewController extends AbstractController
             'convert.html.twig',
             [
                 'links' => $this->links,
+            ]
+        );
+    }
+
+     /**
+     * @Route("/web/unitList", name="unitList")
+     */
+    public function displayUnitList()
+    {
+        return $this->render(
+            'unitList.html.twig',
+            [
+                'links' => $this->links,
+                'allUnits' => $this->unitService->displayUnits($this->unitRepository),
             ]
         );
     }

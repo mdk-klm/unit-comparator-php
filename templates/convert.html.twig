@@ -1,5 +1,39 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    aa
+    <form action="/ma-page-de-traitement" method="post">
+  
+        <label for="msg">valueToConvert :</label>
+        <textarea id="msg" name="user_message"></textarea>
+    </div>
+    <div>
+<select name="inUnit">
+
+	<option>m²</option>
+	<option>ha</option>
+	<option>kw</option>
+    <option>kg</option>
+
+
+</select>
+</div>
+
+<select name="outUnit">
+
+	<option>ha</option>
+	<option>m2</option>
+	<option>kg</option>
+    <option>kw</option>
+
+
+</select>
+
+
+
+
+
+    <div class="button">
+        <button type="submit">Convertir</button>
+    </div>
+</form>
 {% endblock %}
