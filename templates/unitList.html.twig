@@ -1,23 +1,30 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <table><thead>
-    <tr>
-        <th>ID</th>
-        <th>Symbole</th>
-        <th>Définition</th>
-    <tr/>
+
+<table>
+    <thead>
+        <tr>
+       <th>id</th>
+       <th>symbole</th>
+       <th>définition</th>
+       <th>lien</th>
+        </tr>
     </thead>
     <tbody>
-    <tr>
-        <td>01</td>
-        <td>toto</td>
-        <td>le toto est une unité de mesure d'intelligence</td>
-
-    </tr>
+        <tr>
+            {% for service in allUnits %}
+            <tr> 
+                <td>{{ service.id }}</td>
+                <td>{{ service.symbol }}</td>
+                <td>{{ service.definition }}</td>
+                <td><a target="_blank" href="{{service.source.url}}">cliquez ici</a></td>
+            </tr>
+           
+            {% endfor %}
+        </tr> 
     </tbody>
-     </table>
+</table>
 {% endblock %}
 
 
-variable allUnit = tableau avec info requete

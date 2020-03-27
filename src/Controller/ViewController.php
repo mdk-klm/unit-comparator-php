@@ -33,7 +33,8 @@ class ViewController extends AbstractController
   /**
      * VoteController constructor.
 
-     * @param UnitService $unitService
+     * @param UnitService $
+     * 
      * @param UnitRepository $unitRepository
      */
     public function __construct(
@@ -52,6 +53,8 @@ class ViewController extends AbstractController
     {
         return $this->render(
             'index.html.twig',
+
+
             [
                 'links' => $this->links,
             ]
@@ -72,7 +75,7 @@ class ViewController extends AbstractController
     }
 
      /**
-     * @Route("/web/unitList", name="unitList")
+     * @Route("/web/units", name="unitList")
      */
     public function displayUnitList()
     {
